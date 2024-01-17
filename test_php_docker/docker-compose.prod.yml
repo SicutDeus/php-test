@@ -1,0 +1,85 @@
+version: "3.9"
+
+x-logging: &log-tmpl
+  logging:
+    driver: json-file
+    options:
+      "max-size": "10m"
+
+# main part
+services:
+  test_php_front:
+    tty: true
+    container_name: test_php_front
+    build:
+      context: ../test_php_front
+      dockerfile: Dockerfile.dev #later remove
+    volumes:
+      - ../test_php_front:/test_php/test_php_front
+    image: test_php_front
+    working_dir: /test_php/test_php_front
+    ports:
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    environment:
+      NODE_ENV: development #later change to production
+      CHOKIDAR_USEPOLLING: true #for webpack hot module replacement 
+      NGINX_DOCKER_URL: ${NGINX_DOCKER_URL}
+    depends_on:
+      - test_php_back
+    restart: "no"
+    networks:
+      - test_php_network
+    <<: *log-tmpl
+
+
+
+  test_php_db:
+    image: mysql:8.2
+    restart: unless-stopped
+    container_name: test_php_db
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      # MYSQL_USER: ${DB_USERNAME}
+    ports:
+      - 3306:3306
+    networks:
+      - test_php_network
+
+
+  nginx:
+    image: nginx
+    container_name: test_php_nginx
+    stdin_open: true
+    tty: true
+    ports:
+      - ${NGINX_PORT}:${NGINX_PORT}
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    environment:
+      HOST_URL: ${HOST_URL}
+      NET_ALLOW: ${NET_ALLOW}
+      FRONTEND_PORT: ${FRONTEND_PORT}
+
+    depends_on:
+      - test_php_back
+    networks:
+      - test_php_network
+
+
+  test_php_back:
+    container_name: test_php_back
+    build: 
+      context: ../test_php_back
+    image: test_php_back
+    volumes:
+      - ../test_php_back:/var/www/html
+    restart: "no"
+    networks:
+      - test_php_network
+
+
+networks:
+  test_php_network:
+    driver: bridge
