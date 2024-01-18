@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Telegram\TelegramBotController;
@@ -40,13 +41,10 @@ Route::get('/seed/', [function () {
     }
 }]);
 
-Route::get('/test', [function () {
-
-    return User::find(1);
-}]);
-
 
 Route::group(['namespace' => 'telegram-bot'], function () {
     Route::get('/bot', [TelegramBotController::class, 'show']);
-    Route::get('/bot/send-message', [TelegramBotController::class, 'send_message']);
+    Route::get('/bot/send-message', [TelegramBotController::class, 'sendMessage']);
 });
+
+Route::get('/test', [TestController::class, 'testFunc']);

@@ -22,7 +22,7 @@ class TelegramBotController extends Controller
     }
 
 
-    public function send_message()
+    public function sendMessage()
     {
         $response = $this->telegram->sendMessage([
             'chat_id' => '325577651',
