@@ -8,26 +8,44 @@ scalar Date
 type Query {
     user(
       id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
-
       email: String @eq @rules(apply: ["prohibits:id", "required_without:id", "email"])
     ): User @find
 
     users(
-      name: String @where(operator: "like")
-    ): [User!]! @paginate(defaultCount: 10)
+      order_by: _ @orderBy(columns: ["name", "email", "id"])
+      #where: _ @whereConditions(columns: ["name", "email", "id"])
+      #name: String @where(operator: "like")
+      name: String @customSearch
+    #): [User!]! @paginate(defaultCount: 10, maxCount:20,  type: PAGINATOR, builder: "App\\Models\\User@statistics")
+    ): [User!]! @paginate(defaultCount: 10, maxCount:20,  type: PAGINATOR, scopes: ["limit"])
+
+
+    usersAll(
+        name: String @where(operator: "like")
+        #): [User!]! @paginate(defaultCount: 10, maxCount:20,  type: PAGINATOR, builder: "App\\Models\\User@statistics")
+    ): [User!]! @all
 
     ticket(
     id: ID @eq
     ): Ticket @find
 
-    tickets: [Ticket!] @paginate(defaultCount: 10)
+    tickets(name: String @customSearch): [Ticket!] @paginate(defaultCount: 10)
 
     event(
         id: ID @eq
     ): Event @find
 
     events: [Event!] @paginate(defaultCount: 10)
+    CustomSearchQuery(
+        model: String!
+        value: String!
+        int_value: Int!
+    ): [SearchFields!]!
 
+}
+type SearchFields{
+    id: ID!
+    name: String!
 }
 
 type User {
@@ -46,13 +64,23 @@ type User {
     updated_at: DateTime!
 }
 
-type Mutation {
-  createUser(
+type DeleteResponse{
+    status: String
+    message: String
+}
+
+input CreateUserInput{
     name: String!
     email: String
     password: String
-    ): User! @create
-    deleteUser(id: ID! @whereKey): User @delete
+}
+
+type Mutation {
+  createUser(
+      input: CreateUserInput @spread
+    ): User!
+    deleteUser(id: ID! @whereKey): DeleteResponse
+    updateUser(id: ID, email: String, password: String): User @update
 }
 
 type Event {

@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Query\Builder;
+use GraphQL\Type\Definition\ResolveInfo;
+use Laravel\Scout\Searchable;
+use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class User extends Authenticatable
 {
@@ -48,4 +54,22 @@ class User extends Authenticatable
     {
         return $this->hasMany(Ticket::class);
     }
+
+    public function statistics($root, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
+    {
+        return self::query()->where('name', 'like', '%ab%');
+    }
+
+    public function scopeLimit(QueryBuilder $query)
+    {
+        return $query;
+        return $query->where('name', 'like', '%ab%');
+    }
+
+
+    public function searchable()
+    {
+        return 'name';
+    }
+    public static $searchableField = 'name';
 }

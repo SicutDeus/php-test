@@ -159,7 +159,8 @@ return [
         /*
          * Package Service Providers...
          */
-
+        \Nuwave\Lighthouse\WhereConditions\WhereConditionsServiceProvider::class,
+        \Nuwave\Lighthouse\Scout\ScoutServiceProvider::class,
         /*
          * Application Service Providers...
          */
