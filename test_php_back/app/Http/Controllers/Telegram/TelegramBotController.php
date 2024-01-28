@@ -26,7 +26,7 @@ class TelegramBotController extends Controller
     {
         $response = $this->telegram->sendMessage([
             'chat_id' => '325577651',
-            'text' => 'https://th.bing.com/th/id/R.95f5c24b58cae5d9a7ebcda1fe9716d2?rik=Cgnzv2jnfip%2feA&pid=ImgRaw&r=0'
+            'text' => 'https://risovach.ru/upload/2014/08/mem/krasavchik_59691454_orig_.jpg'
         ]);
         $messageId = $response->getMessageId();
         return $messageId;

@@ -1,0 +1,7 @@
+curl localhost/api/ \
+  -F operations='{ "query": "mutation ($file: Upload!) { upload(file: $file) {id, name, url}}", "variables": { "file": null } }' \
+  -F map='{ "0": ["variables.file"] }' \
+  -F 0=@my_file.txt
+  
+  
+{ "query": "mutation ($file: Upload!) { upload(file: $file) {id, name, url}}", "variables": { "file": null } }

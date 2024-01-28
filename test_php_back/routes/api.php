@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\TestController;
+use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Telegram\TelegramBotController;
@@ -48,3 +49,4 @@ Route::group(['namespace' => 'telegram-bot'], function () {
 });
 
 Route::get('/test', [TestController::class, 'testFunc']);
+
