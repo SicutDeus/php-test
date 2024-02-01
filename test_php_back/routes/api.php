@@ -49,4 +49,5 @@ Route::group(['namespace' => 'telegram-bot'], function () {
 });
 
 Route::get('/test', [TestController::class, 'testFunc']);
+Route::get('/history/{table}/{original_id}/', [TestController::class, 'testFunc2']);
 
