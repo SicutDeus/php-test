@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Events\SaveObjectEvent;
+use App\Events\SaveObjectEventTest;
 use App\TestModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ class Event extends TestModel
     use HasFactory;
 
     protected $dispatchesEvents = [
-        'updated' => SaveObjectEvent::class,
+//        'updated' => SaveObjectEvent::class,
+        'updating' => SaveObjectEventTest::class,
     ];
 }

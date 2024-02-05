@@ -67,7 +67,6 @@ class User extends Authenticatable
     public function scopeLimit(QueryBuilder $query)
     {
         return $query;
-        return $query->where('name', 'like', '%ab%');
     }
 
 
