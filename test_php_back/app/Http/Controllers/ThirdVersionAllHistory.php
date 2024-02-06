@@ -46,20 +46,26 @@ class ThirdVersionAllHistory extends Controller
             unset($main_object_data[$field]);
         }
         $data[$cfg['front_many_name']]['object'] = $main_object_data;
-        $data[$cfg['front_many_name']]['history'] =
-            DB::table('history_savings')
+        $history = DB::table('history_savings')
             ->where('table_name', $table)
             ->where('original_id', $object->id)
-            ->get()->toArray();
-        $all_history[] = $data[$cfg['front_many_name']]['history'];
+            ->get();
+        $data[$cfg['front_many_name']]['history'] = $history;
+        $all_history[] = $history;
         return $data;
     }
     public function testWithClasses($table, $original_id)
     {
         $all_history = ([]);
         $res = self::getOneTable($table, original_id: $original_id, all_history: $all_history);
-        $all_history[] = reset($res)['history'];
-        dd($all_history);
-
+        $check = [];
+        foreach ($all_history as $history) {
+            foreach ($history as $item) {
+                $check[] = $item;
+            }
+        }
+        usort($check, function ($a, $b) { return $a->created_at <=> $b->created_at; });
+        $res['all_history'] = $check;
+        return $res;
     }
 }
