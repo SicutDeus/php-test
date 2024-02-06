@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\TestController;
+use App\Http\Controllers\FirstWorkingVersion;
+use App\Http\Controllers\SecondVersionClasses;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -48,7 +49,12 @@ Route::group(['namespace' => 'telegram-bot'], function () {
     Route::get('/bot/send-message', [TelegramBotController::class, 'sendMessage']);
 });
 
-Route::get('/test', [TestController::class, 'testFunc']);
-Route::get('/history/{table}/{original_id}/', [TestController::class, 'testFunc2']);
-Route::get('/history/{table}/{original_id}/test', [TestController::class, 'testFunc3']);
+
+Route::get('/history/classes/{table}/{original_id}/test/', [\App\Http\Controllers\ThirdVersionAllHistory::class, 'testWithClasses']);
+
+
+Route::get('/test', [FirstWorkingVersion::class, 'testFunc']);
+Route::get('/history/{table}/{original_id}/', [FirstWorkingVersion::class, 'testFunc2']);
+Route::get('/history/{table}/{original_id}/test', [FirstWorkingVersion::class, 'testFunc3']);
+
 

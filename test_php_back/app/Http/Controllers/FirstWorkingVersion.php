@@ -14,7 +14,7 @@ use phpDocumentor\Reflection\Types\Null_;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use \Illuminate\Database\Eloquent\Collection;
 
-class TestController extends Controller
+class FirstWorkingVersion extends Controller
 {
     public function testFunc()
     {

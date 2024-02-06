@@ -4,11 +4,11 @@ namespace App\Models;
 
 use App\Events\SaveObjectEvent;
 use App\Events\SaveObjectEventTest;
-use App\TestModel;
+use App\HistorySavingsConfig;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Event extends TestModel
+class Event extends Model
 {
     use HasFactory;
 
