@@ -18,8 +18,8 @@ class TicketFactory extends Factory
      */
     public function definition(): array
     {
-        $event = Event::factory()->create();
-        $user = User::factory()->create();
+        $event = Event::inRandomOrder()->first();
+        $user = User::inRandomOrder()->first();
         return [
             'name' => fake()->word(),
             'event_id'=> $event->id,

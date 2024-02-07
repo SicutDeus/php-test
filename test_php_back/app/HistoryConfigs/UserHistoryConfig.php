@@ -11,7 +11,7 @@ class UserHistoryConfig extends HistoryBaseConfig{
     protected static $front_many_name = 'users';
     protected static $exclude_fields = ['email_verified_at', 'created_at', 'updated_at'];
 
-    protected static  $relations = ([
+    protected static $relations = ([
         'tickets' => 'tickets',
     ]);
 }

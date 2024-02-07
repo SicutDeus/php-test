@@ -52,6 +52,7 @@ Route::group(['namespace' => 'telegram-bot'], function () {
 
 Route::get('/history/classes/{table}/{original_id}/test2/', [\App\Http\Controllers\SecondVersionClasses::class, 'testWithClasses']);
 Route::get('/history/classes/{table}/{original_id}/test3/', [\App\Http\Controllers\ThirdVersionAllHistory::class, 'testWithClasses']);
+Route::get('/history/classes/{table}/{original_id}/test4/', [\App\Http\Controllers\FourthVersion::class, 'jopaTest']);
 
 
 Route::get('/test', [FirstWorkingVersion::class, 'testFunc']);

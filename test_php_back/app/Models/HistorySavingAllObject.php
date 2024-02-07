@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class HistorySaving extends Model
+class HistorySavingAllObject extends Model
 {
     use HasFactory;
     protected $guarded = false;

@@ -31,6 +31,7 @@ class SaveObjectEventTest
 //            'table_name' => $object->getTable()
 //        ]);
         dd($object);
+        $request = request();
         HistorySaving::create([
             'table_name' => $object->getTable(),
             'changes' => json_encode($duplicates),

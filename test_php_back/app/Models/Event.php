@@ -14,6 +14,6 @@ class Event extends Model
 
     protected $dispatchesEvents = [
 //        'updated' => SaveObjectEvent::class,
-        'updating' => SaveObjectEventTest::class,
+        'updating' => SaveObjectEvent::class,
     ];
 }

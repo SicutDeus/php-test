@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('history_savings', function (Blueprint $table) {
+        Schema::create('history_saving_all_objects', function (Blueprint $table) {
             $table->id();
 
-            $table->string('change_author')->nullable();
-            $table->string('table_name')->index();
-            $table->json('changes')->nullable();
-            $table->unsignedBigInteger('original_id')->nullable()->index();
+            $table->string('table_name');
+            $table->json('data')->nullable();
+            $table->unsignedBigInteger('original_instance_id')->nullable()->index();
+            $table->unsignedBigInteger('history_change_id')->nullable()->index();
 
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('history_savings');
+        Schema::dropIfExists('history_saving_all_objects');
     }
 };
