@@ -96,7 +96,6 @@ class FourthVersion extends Controller
         $all_history = ([]);
         $time_spend = [];
         $res = self::getOneTable($table, original_id: $original_id, all_history: $all_history, time_spend: $time_spend);
-        dd($time_spend);
         $check = [];
         foreach ($all_history as $history) {
             foreach ($history as $item) {
