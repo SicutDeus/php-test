@@ -14,4 +14,5 @@ class UserHistoryConfig extends HistoryBaseConfig{
     protected static $relations = ([
         'tickets' => 'tickets',
     ]);
+
 }

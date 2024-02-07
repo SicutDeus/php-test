@@ -20,7 +20,7 @@ class FirstWorkingVersion extends Controller
     {
 //        $ticket = Ticket::inRandomOrder()->first();
         $ticket = Ticket::find(1);
-        for($i = 0; $i < 8000; $i++){
+        for($i = 0; $i < 5000; $i++){
             $ticket->name = fake()->name;
             if (rand(0, 15) == 6){
                 $ticket->event_id = Event::inRandomOrder()->first()->id;

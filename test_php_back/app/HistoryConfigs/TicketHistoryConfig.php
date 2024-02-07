@@ -14,4 +14,9 @@ class TicketHistoryConfig extends HistoryBaseConfig{
     protected static  $relations = ([
         'events' => 'event',
     ]);
+
+    public static  $foreign_tables = ([
+        'event_id' => 'events',
+        'user_id' => 'users',
+    ]);
 }

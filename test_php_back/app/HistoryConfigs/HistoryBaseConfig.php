@@ -8,6 +8,7 @@ class HistoryBaseConfig{
     protected static $front_many_name; // this model
     protected static $front_one_name; // this model
     protected static $relations = ([]); // what relations should be get -> ['relation_name' => 'method_to_get_relation']
+    protected static $foreign_tables = ([]); // what relations should be get -> ['relation_field' => 'relative_table']
     protected static $exclude_fields = ([]); // if some fields can be excluded
     protected static $extra_filter_fields = ([]); // ['field_name' => 'field_value']
     protected static $timestamp_to_filter = ([]); // ['field_name' => 'timestamp']

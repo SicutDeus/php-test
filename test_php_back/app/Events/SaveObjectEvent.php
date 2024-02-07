@@ -13,6 +13,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use function Symfony\Component\Translation\t;
 
 class SaveObjectEvent
 {
@@ -48,7 +49,8 @@ class SaveObjectEvent
         $newHistorySaving = HistorySaving::create([
             'table_name' => $object->getTable(),
             'changes' => json_encode($only_changed),
-            'original_id' => $object->getKey()
+            'original_id' => $object->getKey(),
+            'has_foreign_chagned' => (count($changed_fks) > 0)? true : false
         ]);
 
         foreach ($changed_fks as $fk_column => $fk_table) {
