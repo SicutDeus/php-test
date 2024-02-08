@@ -12,4 +12,11 @@ class EventHistoryConfig extends HistoryBaseConfig{
     protected static $front_many_name = 'events';
     protected static $model = Event::class;
 
+    public static  $foreign_tables = ([
+        'theater_id' => ([
+            'table' => 'theaters',
+            'name' => 'theater',
+        ]),
+    ]);
+
 }

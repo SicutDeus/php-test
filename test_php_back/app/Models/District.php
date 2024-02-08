@@ -4,24 +4,17 @@ namespace App\Models;
 
 use App\Events\CreateObjectEvent;
 use App\Events\SaveObjectEvent;
-use App\Events\SaveObjectEventTest;
-use App\HistorySavingsConfig;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Event extends Model
+class District extends Model
 {
     use HasFactory;
-    protected $guarded = false;
-
-    public function theater()
-    {
-        return $this->belongsTo(Theater::class);
-    }
-
-
     protected $dispatchesEvents = [
         'updated' => SaveObjectEvent::class,
         'created' => CreateObjectEvent::class,
     ];
+    public function theaters(){
+        return $this->hasMany(Theater::class);
+    }
 }

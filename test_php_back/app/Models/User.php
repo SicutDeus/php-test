@@ -24,7 +24,6 @@ class User extends Authenticatable
         'updated' => SaveObjectEvent::class,
         'created' => CreateObjectEvent::class
     ];
-
     /**
      * The attributes that are mass assignable.
      *

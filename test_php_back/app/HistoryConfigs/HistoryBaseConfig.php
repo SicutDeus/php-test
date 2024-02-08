@@ -23,6 +23,7 @@ class HistoryBaseConfig{
             'exclude_fields' => static::$exclude_fields,
             'extra_filter_fields' => static::$extra_filter_fields,
             'timestamps_to_filter' => static::$timestamp_to_filter,
+            'foreign_tables' => static::$foreign_tables,
         ];
     }
 }

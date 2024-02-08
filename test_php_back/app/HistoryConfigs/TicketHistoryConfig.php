@@ -11,12 +11,15 @@ class TicketHistoryConfig extends HistoryBaseConfig{
     protected static $front_many_name = 'tickets';
     protected static $model = Ticket::class;
 
-    protected static  $relations = ([
-        'events' => 'event',
-    ]);
 
     public static  $foreign_tables = ([
-        'event_id' => 'events',
-        'user_id' => 'users',
+        'event_id' => ([
+            'table' => 'events',
+            'name' => 'event',
+        ]),
+        'user_id' =>([
+            'table' => 'users',
+            'name' => 'user',
+        ]),
     ]);
 }

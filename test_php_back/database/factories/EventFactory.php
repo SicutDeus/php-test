@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Theater;
 use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Event>
@@ -16,8 +17,9 @@ class EventFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->sentence(3),
-            'date' => fake()->date('Y-m-d')
+            'name' => 'theater ' . fake()->sentence(3),
+            'date' => fake()->date('Y-m-d'),
+            'theater_id' => Theater::inRandomOrder()->first()->id,
             ];
     }
 }

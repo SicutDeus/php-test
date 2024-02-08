@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('events', function (Blueprint $table) {
+        Schema::create('theaters', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name')->nullable();
-            $table->date('date')->nullable();
+            $table->string('name');
+            $table->string('address');
 
-            $table->unsignedBigInteger('theater_id')->nullable();
-            $table->foreign('theater_id')->references('id')->on('theaters')->onDelete('set null');
+            $table->unsignedBigInteger('district_id')->nullable();
+            $table->foreign('district_id')->references('id')->on('districts')->onDelete('set null');
 
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('theaters');
     }
 };

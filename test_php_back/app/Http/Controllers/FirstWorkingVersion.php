@@ -18,19 +18,9 @@ class FirstWorkingVersion extends Controller
 {
     public function testFunc()
     {
-        $ticket = Ticket::inRandomOrder()->first();
-        for($i = 0; $i < 3; $i++){
-            $ticket->name = fake()->name;
-            if (rand(0, 15) == 6){
-                $ticket->event_id = Event::inRandomOrder()->first()->id;
-
-            };
-            if (rand(0, 15) == 6){
-                $ticket->user_id = User::inRandomOrder()->first()->id;
-            };
-            $ticket->save();
-    }
-
+        $ticket = Ticket::find(1);
+        $ticket->event_id = 5;
+        $ticket->save();
         return response()->json('success');
     }
 

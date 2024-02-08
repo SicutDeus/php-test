@@ -27,7 +27,7 @@ class CreateObjectEvent
     {
         HistorySaving::create([
             'table_name' => $object->getTable(),
-            'changes' => $object->getAttributes(),
+            'changes' => array_diff_key($object->getAttributes(), array_flip(['password', 'remember_token'])),
             'original_id' => $object->getKey(),
             'has_foreign_chagned' => false,
             'first_created' => true,
