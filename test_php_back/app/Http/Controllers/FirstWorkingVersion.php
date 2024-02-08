@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\District;
 use App\Models\Event;
 use App\Models\HistorySaving;
 use App\Models\Image;
+use App\Models\Theater;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Client\HttpClientException;
@@ -18,9 +20,12 @@ class FirstWorkingVersion extends Controller
 {
     public function testFunc()
     {
-        $ticket = Ticket::find(1);
-        $ticket->event_id = 5;
-        $ticket->save();
+
+
+        $user = User::find(1);
+        $user->name = fake()->name;
+        $user->save();
+
         return response()->json('success');
     }
 
