@@ -22,9 +22,10 @@ class FirstWorkingVersion extends Controller
     {
 
 
-        $user = User::find(1);
-        $user->name = fake()->name;
-        $user->save();
+
+            $event = User::find(1);
+            $event->name = fake()->name;
+            $event->save();
 
         return response()->json('success');
     }

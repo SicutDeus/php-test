@@ -42,7 +42,9 @@ class SaveObjectEvent
         $original = $object->getOriginal();
         $changes = $object->getChanges();
         $only_changed = array_intersect_key($changes, $original);
-
+        if (!array_key_exists('updated_at', $only_changed)) {
+            $only_changed['updated_at'] = $original['updated_at'];
+        }
 
         $changed_fks = $this->check_if_foreign_key($object->getTable(), $only_changed);
 
@@ -53,12 +55,13 @@ class SaveObjectEvent
             'original_id' => $object->getKey(),
             'has_foreign_chagned' => (count($changed_fks) > 0)? true : false
         ]);
-
         foreach ($changed_fks as $fk_column => $fk_table) {
             $original_object = DB::table($fk_table)->find($original[$fk_column]);
+            $new_object = DB::table($fk_table)->find($changes[$fk_column]);
             HistorySavingAllObject::create([
                 'table_name' => $fk_table,
-                'data' => json_encode(get_object_vars($original_object)),
+                'old_object_data' => $original_object,
+                'new_object_data' => $new_object,
                 'original_instance_id' => $original_object->id,
                 'history_change_id' => $newHistorySaving->id
             ]);

@@ -9,7 +9,8 @@ class HistorySavingAllObject extends Model
 {
     use HasFactory;
     protected $casts = [
-        'data' => 'array',
+        'old_object_data' => 'array',
+        'new_object_data' => 'array',
     ];
     protected $guarded = false;
 }

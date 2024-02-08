@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
 
             $table->string('table_name');
-            $table->json('data')->nullable();
+            $table->json('old_object_data')->nullable();
+            $table->json('new_object_data')->nullable();
             $table->unsignedBigInteger('original_instance_id')->nullable()->index();
             $table->unsignedBigInteger('history_change_id')->nullable()->index();
 
