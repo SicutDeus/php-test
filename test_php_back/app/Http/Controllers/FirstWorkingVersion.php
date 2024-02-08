@@ -18,9 +18,8 @@ class FirstWorkingVersion extends Controller
 {
     public function testFunc()
     {
-//        $ticket = Ticket::inRandomOrder()->first();
-        $ticket = Ticket::find(1);
-        for($i = 0; $i < 5000; $i++){
+        $ticket = Ticket::inRandomOrder()->first();
+        for($i = 0; $i < 3; $i++){
             $ticket->name = fake()->name;
             if (rand(0, 15) == 6){
                 $ticket->event_id = Event::inRandomOrder()->first()->id;
@@ -31,6 +30,36 @@ class FirstWorkingVersion extends Controller
             };
             $ticket->save();
     }
+
+        return response()->json('success');
+    }
+
+    public function seedChangeFunc()
+    {
+        for($i = 0; $i < 25; $i++){
+            $ticket = Ticket::inRandomOrder()->first();
+            $ticket->name = fake()->name;
+            if (rand(0, 7) == 6){
+                $ticket->event_id = Event::inRandomOrder()->first()->id;
+
+            };
+            if (rand(0, 7) == 6){
+                $ticket->user_id = User::inRandomOrder()->first()->id;
+            };
+            $ticket->save();
+        }
+
+        for($i = 0; $i < 25; $i++){
+            $event = Event::inRandomOrder()->first();
+            $event->name = fake()->unique()->name;
+            $event->date = fake()->date;
+            $event->save();
+        }
+        for($i = 0; $i < 25; $i++){
+            $user = User::inRandomOrder()->first();
+            $user->name = fake()->name;
+            $user->save();
+        }
 
         return response()->json('success');
     }

@@ -46,9 +46,10 @@ class SaveObjectEvent
 
         $changed_fks = $this->check_if_foreign_key($object->getTable(), $only_changed);
 
+
         $newHistorySaving = HistorySaving::create([
             'table_name' => $object->getTable(),
-            'changes' => json_encode($only_changed),
+            'changes' => $only_changed,
             'original_id' => $object->getKey(),
             'has_foreign_chagned' => (count($changed_fks) > 0)? true : false
         ]);

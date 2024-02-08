@@ -8,5 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class HistorySavingAllObject extends Model
 {
     use HasFactory;
+    protected $casts = [
+        'data' => 'array',
+    ];
     protected $guarded = false;
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Events\CreateObjectEvent;
 use App\Events\SaveObjectEvent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,6 +22,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
     protected $dispatchesEvents = [
         'updated' => SaveObjectEvent::class,
+        'created' => CreateObjectEvent::class
     ];
 
     /**

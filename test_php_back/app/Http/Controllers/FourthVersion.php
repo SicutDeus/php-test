@@ -86,7 +86,6 @@ class FourthVersion extends Controller
             }
         }
         $result_time = microtime(true) - $main_time;
-        error_log("Result time $result_time");
         $data[$cfg['front_many_name']]['history'] = $history;
         $all_history[] = $history;
         return $data;
