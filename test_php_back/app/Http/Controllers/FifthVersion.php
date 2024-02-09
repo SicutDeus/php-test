@@ -90,12 +90,7 @@ class FifthVersion extends Controller
         for($i=0;$i<$len;$i++) {
             $level = &$level[$scope[$i]];
         }
-        if($level == Null){
             $level = $value;
-        }
-        else{
-            $level[] = $value;
-        }
     }
 
     private static function objectAndInnerRelationsHistory($table, $original_id, $start_date, $end_date, &$nested, $current_scope)
@@ -147,8 +142,8 @@ class FifthVersion extends Controller
         $nested = ([]);
         self::objectAndInnerRelationsHistory($table, $original_id, '2020-02-01 16:43:25', '2030-02-01 16:43:25', $nested, [$this_cfg['front_one_name']]);
 
-        $nested[self::addMiliseconds(date_create($created['created_at']))->format(self::$date_format)]= ([$this_cfg['front_one_name'] => array($created)]);
-        $nested[now()->format(self::$date_format)] = ([$this_cfg['front_one_name'] => array($current)]);
+        $nested[self::addMiliseconds(date_create($created['created_at']))->format(self::$date_format)]= ([$this_cfg['front_one_name'] => $created]);
+        $nested[now()->format(self::$date_format)] = ([$this_cfg['front_one_name'] => $current]);
         ksort($nested);
 
         return ([
@@ -163,31 +158,62 @@ class FifthVersion extends Controller
     }
 
     private static function combine_arrays_by_time($input) {
-        $result = [];
-        $temp = [];
         $MS_IN_S = 60;
         $MERGE_THRESHOLD = 1/60; // in seconds
+        $result = [];
+        $temp = [];
+        $last_time = null;
 
         foreach ($input as $time => $array) {
-            if (empty($temp)) {
-                $temp[$time] = $array;
-            } else {
-                $last_time = key(array_slice($temp, -1, 1, true));
+            if ($last_time === null) {
+                $temp[] = $array;
+            }
+            else {
                 $diff = abs(strtotime($time) - strtotime($last_time));
 
-                if ($diff <= $MERGE_THRESHOLD * $MS_IN_S) {
-                    $temp[$time] = $array;
+                if ($diff <= $MS_IN_S * $MERGE_THRESHOLD) {
+                    $temp[] = $array;
                 } else {
-                    $result[] = $temp;
-                    $temp = [$time => $array];
+                    $result[$time] = $temp;
+                    $temp = [$array];
                 }
             }
+
+            $last_time = $time;
         }
 
         if (!empty($temp)) {
-            $result[] = $temp;
+            $result[$time] = $temp;
         }
 
         return $result;
-    }
+}
+//    function combine_arrays($input) {
+//        $result = [];
+//        $temp = [];
+//
+//        foreach ($input as $time => $array) {
+//            if (empty($temp)) {
+//                $temp[$time] = $array;
+//            } else {
+//                $last_time = key(array_slice($temp, -1, 1, true));
+//                $diff = abs(strtotime($time) - strtotime($last_time));
+//
+//                if ($diff <= 5) {
+//                    $temp[$time] = $array;
+//                } else {
+//                    $result[] = $temp;
+//                    $temp = [$time => $array];
+//                }
+//            }
+//        }
+//
+//        if (!empty($temp)) {
+//            $result[] = $temp;
+//        }
+//
+//        return $result;
+//    }
+
+
 }
