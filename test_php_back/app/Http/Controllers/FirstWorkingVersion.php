@@ -20,12 +20,82 @@ class FirstWorkingVersion extends Controller
 {
     public function testFunc()
     {
+        for ($i = 0; $i < 300; $i++){
+            sleep(2);
+            $ticket = Ticket::find(1);
+            $rand = rand(0,5);
+            if ($rand == 1){
+                $ticket->name = fake()->name;
+                $ticket->save();
+            }
+            $user = User::find($ticket->user_id);
+            $rand = rand(0,20);
+            if ($rand==1){
+                $ticket->user_id = User::inRandomOrder()->first()->id;
+                $ticket->save();
+            }
 
+            $user = User::find($ticket->user_id);
+            $rand = rand(0,5);
+            if ($rand == 1){
+                $user->name = fake()->name;
+                $user->save();
+            }
+            $event = Event::find($ticket->event_id);
+            $rand = rand(0,20);
+            if ($rand == 1){
+                $ticket->event_id = Event::inRandomOrder()->first()->id;
+                $ticket->save();
+            }
 
+            $event = Event::find($ticket->event_id);
+            $theater = Theater::find($event->theater_id);
+            $rand = rand(0,5);
+            if ($rand == 1){
+                $theater->name = fake()->name;
+                $theater->save();
+            }
 
-            $event = User::find(1);
-            $event->name = fake()->name;
-            $event->save();
+            $event = Event::find($ticket->event_id);
+            $theater = Theater::find($event->theater_id);
+            $rand = rand(0,20);
+            if ($rand == 1){
+                $event->theater_id = Theater::inRandomOrder()->first()->id;
+                $event->save();
+            }
+
+            $event = Event::find($ticket->event_id);
+            $theater = Theater::find($event->theater_id);
+            $rand = rand(0,5);
+            if ($rand == 1){
+                $theater->name = fake()->name;
+                $theater->save();
+            }
+
+            $event = Event::find($ticket->event_id);
+            $theater = Theater::find($event->theater_id);
+            $rand = rand(0,20);
+            if ($rand == 1){
+                $theater->district_id = District::inRandomOrder()->first()->id;
+                $theater->save();
+            }
+
+            $event = Event::find($ticket->event_id);
+            $theater = Theater::find($event->theater_id);
+            $district = District::find($theater->district_id);
+            $rand = rand(0,5);
+            if ($rand == 1){
+                $district->name = fake()->name;
+                $district->save();
+            }
+
+            $event = Event::find($ticket->event_id);
+            $rand = rand(0,5);
+            if ($rand == 1){
+                $event->name = fake()->name;
+                $event->save();
+            }
+        }
 
         return response()->json('success');
     }
@@ -33,7 +103,7 @@ class FirstWorkingVersion extends Controller
     public function seedChangeFunc()
     {
         for($i = 0; $i < 25; $i++){
-            $ticket = Ticket::inRandomOrder()->first();
+            $ticket = Ticket::find(1);
             $ticket->name = fake()->name;
             if (rand(0, 7) == 6){
                 $ticket->event_id = Event::inRandomOrder()->first()->id;

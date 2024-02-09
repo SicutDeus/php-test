@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\Models\HistorySaving;
 use App\Models\HistorySavingAllObject;
+use App\Models\Ticket;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -43,7 +44,7 @@ class SaveObjectEvent
         $changes = $object->getChanges();
         $only_changed = array_intersect_key($changes, $original);
         if (!array_key_exists('updated_at', $only_changed)) {
-            $only_changed['updated_at'] = $original['updated_at'];
+            $only_changed['updated_at'] = $original['updated_at']->format('Y-m-d H:i:s.v');
         }
 
         $changed_fks = $this->check_if_foreign_key($object->getTable(), $only_changed);

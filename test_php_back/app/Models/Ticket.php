@@ -21,6 +21,10 @@ class Ticket extends Model
     {
         return $this->hasOne(Event::class, 'id', 'event_id');
     }
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s.v',
+        'updated_at' => 'datetime:Y-m-d H:i:s.v',
+    ];
 
     public function user()
     {

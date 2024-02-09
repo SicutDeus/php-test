@@ -8,6 +8,7 @@ use App\HistoryConfigs\TheaterHistoryConfig;
 use App\HistoryConfigs\TicketHistoryConfig;
 use App\HistoryConfigs\UserHistoryConfig;
 use App\Models\HistorySavingAllObject;
+use DateInterval;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,7 @@ use stdClass;
 
 class FifthVersion extends Controller
 {
-
+    private static $date_format = 'Y-m-d H:i:s.u';
     private static $tableName_historyConfigs = ([
         'users' => UserHistoryConfig::class,
         'tickets' => TicketHistoryConfig::class,
@@ -74,13 +75,27 @@ class FifthVersion extends Controller
         return $main_object_data;
     }
 
+    private static function addMiliseconds($date)
+    {
+        $interval = new DateInterval('PT0S');
+        $interval->f = random_int(0, 999999) / 1000000;
+        $date->add($interval);
+        return $date;
+    }
+
     private static function setVal(&$data,$scope,$value){
-        $level = &$data[];
+        $date = self::addMiliseconds(date_create($value['updated_at']));
+        $level = &$data[$date->format(self::$date_format)];
         $len = count($scope);
         for($i=0;$i<$len;$i++) {
             $level = &$level[$scope[$i]];
         }
-        $level = $value;
+        if($level == Null){
+            $level = $value;
+        }
+        else{
+            $level[] = $value;
+        }
     }
 
     private static function objectAndInnerRelationsHistory($table, $original_id, $start_date, $end_date, &$nested, $current_scope)
@@ -131,16 +146,48 @@ class FifthVersion extends Controller
         $end_time = self::getEndInterval($start_time, 1920);
         $nested = ([]);
         self::objectAndInnerRelationsHistory($table, $original_id, '2020-02-01 16:43:25', '2030-02-01 16:43:25', $nested, [$this_cfg['front_one_name']]);
-        array_splice($nested, 0, 0, [$this_cfg['front_one_name'] => [$this_cfg['front_one_name'] => $created]]);
-        $nested[] = [$this_cfg['front_one_name'] => $current];
+
+        $nested[self::addMiliseconds(date_create($created['created_at']))->format(self::$date_format)]= ([$this_cfg['front_one_name'] => array($created)]);
+        $nested[now()->format(self::$date_format)] = ([$this_cfg['front_one_name'] => array($current)]);
+        ksort($nested);
+
         return ([
-            'all_history'=>$nested,
+            'all_history'=>self::combine_arrays_by_time($nested),
         ]);
     }
 
     private static function getEndInterval($start_date, $hours){
         $end_date = new \DateTime($start_date);
         $end_date->add(new \DateInterval('PT'.$hours.'H'));
-        return $end_date->format('Y-m-d H:i:s');
+        return $end_date->format(self::$date_format);
+    }
+
+    private static function combine_arrays_by_time($input) {
+        $result = [];
+        $temp = [];
+        $MS_IN_S = 60;
+        $MERGE_THRESHOLD = 1/60; // in seconds
+
+        foreach ($input as $time => $array) {
+            if (empty($temp)) {
+                $temp[$time] = $array;
+            } else {
+                $last_time = key(array_slice($temp, -1, 1, true));
+                $diff = abs(strtotime($time) - strtotime($last_time));
+
+                if ($diff <= $MERGE_THRESHOLD * $MS_IN_S) {
+                    $temp[$time] = $array;
+                } else {
+                    $result[] = $temp;
+                    $temp = [$time => $array];
+                }
+            }
+        }
+
+        if (!empty($temp)) {
+            $result[] = $temp;
+        }
+
+        return $result;
     }
 }
