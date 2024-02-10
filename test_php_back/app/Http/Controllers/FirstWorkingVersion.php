@@ -20,7 +20,7 @@ class FirstWorkingVersion extends Controller
 {
     public function testFunc()
     {
-        for ($i = 0; $i < 300; $i++){
+        for ($i = 0; $i < 10000; $i++){
             sleep(2);
             $ticket = Ticket::find(1);
             $rand = rand(0,5);
@@ -102,30 +102,32 @@ class FirstWorkingVersion extends Controller
 
     public function seedChangeFunc()
     {
-        for($i = 0; $i < 25; $i++){
+        for($i = 0; $i < 1; $i++){
             $ticket = Ticket::find(1);
             $ticket->name = fake()->name;
-            if (rand(0, 7) == 6){
-                $ticket->event_id = Event::inRandomOrder()->first()->id;
-
-            };
-            if (rand(0, 7) == 6){
+//            $ticket->event_id = Event::inRandomOrder()->first()->id;
+            if (rand(0, 1) == 1){
                 $ticket->user_id = User::inRandomOrder()->first()->id;
             };
             $ticket->save();
         }
-
-        for($i = 0; $i < 25; $i++){
-            $event = Event::inRandomOrder()->first();
-            $event->name = fake()->unique()->name;
-            $event->date = fake()->date;
-            $event->save();
-        }
-        for($i = 0; $i < 25; $i++){
-            $user = User::inRandomOrder()->first();
-            $user->name = fake()->name;
-            $user->save();
-        }
+//            if (rand(0, 7) == 6){
+//                $ticket->user_id = User::inRandomOrder()->first()->id;
+//            };
+//            $ticket->save();
+//        }
+//
+//        for($i = 0; $i < 25; $i++){
+//            $event = Event::inRandomOrder()->first();
+//            $event->name = fake()->unique()->name;
+//            $event->date = fake()->date;
+//            $event->save();
+//        }
+//        for($i = 0; $i < 25; $i++){
+//            $user = User::inRandomOrder()->first();
+//            $user->name = fake()->name;
+//            $user->save();
+//        }
 
         return response()->json('success');
     }

@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Http\Controllers\FifthVersion;
 use App\Models\HistorySaving;
 use App\Models\HistorySavingAllObject;
 use App\Models\Ticket;
@@ -58,7 +59,7 @@ class SaveObjectEvent
         ]);
         foreach ($changed_fks as $fk_column => $fk_table) {
             $original_object = DB::table($fk_table)->find($original[$fk_column]);
-            $new_object = DB::table($fk_table)->find($changes[$fk_column]);
+            $new_object = FifthVersion::objectAndInnerRelationsCurrentCreated($fk_table, $changes[$fk_column]);
             HistorySavingAllObject::create([
                 'table_name' => $fk_table,
                 'old_object_data' => $original_object,

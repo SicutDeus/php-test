@@ -18,6 +18,7 @@ use stdClass;
 class FifthVersion extends Controller
 {
     private static $date_format = 'Y-m-d H:i:s.u';
+    private static $test_arr = [];
     private static $tableName_historyConfigs = ([
         'users' => UserHistoryConfig::class,
         'tickets' => TicketHistoryConfig::class,
@@ -31,7 +32,7 @@ class FifthVersion extends Controller
         return $model::find($original_id);
     }
 
-    private static function objectAndInnerRelationsCurrentCreated($table, $original_id)
+    public static function objectAndInnerRelationsCurrentCreated($table, $original_id)
     {
         $this_cfg = self::$tableName_historyConfigs[$table]::get_cfg();
 
@@ -54,7 +55,7 @@ class FifthVersion extends Controller
         if ($start_date && $end_date) {
             $history = $history->whereBetween('created_at', [$start_date, $end_date]);
         }
-        return $is_first_created ? $history->first() : $history->get();
+        return $is_first_created ? $history->where('first_created', $is_first_created)->first() : $history->get();
     }
 
     private static function objectAndInnerRelationsFirstCreated($table, $original_id)
@@ -84,47 +85,49 @@ class FifthVersion extends Controller
     }
 
     private static function setVal(&$data,$scope,$value){
-        $date = self::addMiliseconds(date_create($value['updated_at']));
-        $level = &$data[$date->format(self::$date_format)];
-        $len = count($scope);
-        for($i=0;$i<$len;$i++) {
-            $level = &$level[$scope[$i]];
-        }
+            $date = self::addMiliseconds(date_create($value['updated_at']));
+            $level = &$data[$date->format(self::$date_format)];
+            $len = count($scope);
+            for($i=0;$i<$len;$i++) { $level = &$level[$scope[$i]]; }
             $level = $value;
     }
 
-    private static function objectAndInnerRelationsHistory($table, $original_id, $start_date, $end_date, &$nested, $current_scope)
+    private static function objectAndInnerRelationsHistory($table, $original_id, $start_date, $end_date, &$nested, $current_scope, &$already_added_history)
     {
         $this_cfg = self::$tableName_historyConfigs[$table]::get_cfg();
         $main_object_history = self::getHistoryOrFirstCreatedObject($this_cfg['table_name'], $original_id, 0, $start_date, $end_date);
         $resulting_data = array();
         foreach ($main_object_history as $history_object) {
-            $inner_data = ([]);
-            foreach ($this_cfg['foreign_tables'] as $field => $foreign_table) {
-                $scope = $current_scope;
-                if (array_key_exists($field, $history_object->changes)) {
-                    $foreign_object = self::getHistoryOrFirstCreatedObject($foreign_table['table'], $history_object->changes[$field]);
-                    $scope[] = $foreign_table['name'];
-                    $inner_for_foreign_object = self::objectAndInnerRelationsHistory(
-                        $foreign_object->table_name,
-                        $foreign_object->changes['id'],
-                        $start_date, $end_date,
-                        $nested,
-                        $scope
-                    );
-                    $obj_image = HistorySavingAllObject::
-                    where('history_change_id', $history_object->id)
-                    ->where('table_name', $foreign_table['table'])
-                    ->first();
-                    if ($obj_image){
-                        $inner_data[$foreign_table['name']] = $obj_image->new_object_data;
+            if  (!array_key_exists($history_object->id, $already_added_history)) {
+                $inner_data = ([]);
+                foreach ($this_cfg['foreign_tables'] as $field => $foreign_table) {
+                    $scope = $current_scope;
+                    if (array_key_exists($field, $history_object->changes)) {
+                        $foreign_object = self::getHistoryOrFirstCreatedObject($foreign_table['table'], $history_object->changes[$field]);
+                        $scope[] = $foreign_table['name'];
+                        self::objectAndInnerRelationsHistory(
+                            $foreign_object->table_name,
+                            $foreign_object->changes['id'],
+                            $start_date, $end_date,
+                            $nested,
+                            $scope,
+                            $already_added_history
+                        );
+                        $obj_image = HistorySavingAllObject::
+                        where('history_change_id', $history_object->id)
+                            ->where('table_name', $foreign_table['table'])
+                            ->first();
+                        if ($obj_image) {
+                            $inner_data[$foreign_table['name']] = $obj_image->new_object_data;
+                        }
                     }
                 }
-            }
-            if (!$history_object->first_created) {
-                $res = array_merge($inner_data, $history_object->changes);
-                $resulting_data = $res;
-                self::setVal($nested, $current_scope, $res);
+                if (!$history_object->first_created) {
+                    $res = array_merge($inner_data, $history_object->changes);
+                    $resulting_data = $res;
+                    self::setVal($nested, $current_scope, $res);
+                    $already_added_history[$history_object->id] = true;
+                }
             }
         }
         return $resulting_data;
@@ -132,7 +135,6 @@ class FifthVersion extends Controller
 
     public function test5($table, $original_id)
     {
-        $all_history = ([]);
         $this_cfg = self::$tableName_historyConfigs[$table]::get_cfg();
         $created = self::objectAndInnerRelationsFirstCreated($table, $original_id);
         $current = self::objectAndInnerRelationsCurrentCreated($table, $original_id);
@@ -140,14 +142,28 @@ class FifthVersion extends Controller
         $start_time = $main_object->getAttributes()['created_at'];
         $end_time = self::getEndInterval($start_time, 1920);
         $nested = ([]);
-        self::objectAndInnerRelationsHistory($table, $original_id, '2020-02-01 16:43:25', '2030-02-01 16:43:25', $nested, [$this_cfg['front_one_name']]);
-
-        $nested[self::addMiliseconds(date_create($created['created_at']))->format(self::$date_format)]= ([$this_cfg['front_one_name'] => $created]);
-        $nested[now()->format(self::$date_format)] = ([$this_cfg['front_one_name'] => $current]);
+        $already_added_objs = ([]);
+        self::objectAndInnerRelationsHistory($table,
+            $original_id,
+            '2020-02-01 16:43:25',
+            '2030-02-01 16:43:25',
+            $nested,
+            [$this_cfg['front_one_name']],
+            $already_added_objs,
+        );
         ksort($nested);
-
+        $total_count = count($nested);
+        $nested = self::combine_arrays_by_time($nested);
+        $nested[now()->format('Y-m-d H:i:s.u')][] = [$this_cfg['front_one_name'] => $current];
+        $created_array = [
+            self::addMiliseconds(date_create($created['created_at']))->format(self::$date_format) =>
+                array([$this_cfg['front_one_name'] => $created])
+        ];
+        $result = $created_array + $nested;
         return ([
-            'all_history'=>self::combine_arrays_by_time($nested),
+            'all_history'=>$result,
+            'merged'=>count($result),
+            'total'=>$total_count + 1
         ]);
     }
 
@@ -157,63 +173,28 @@ class FifthVersion extends Controller
         return $end_date->format(self::$date_format);
     }
 
-    private static function combine_arrays_by_time($input) {
-        $MS_IN_S = 60;
-        $MERGE_THRESHOLD = 1/60; // in seconds
-        $result = [];
-        $temp = [];
+    private static function combine_arrays_by_time($input){
+        $result_array = array();
+        $MERGE_THRESHOLD = 1.5; // seconds
+        $temp = array();
         $last_time = null;
-
-        foreach ($input as $time => $array) {
-            if ($last_time === null) {
-                $temp[] = $array;
-            }
-            else {
-                $diff = abs(strtotime($time) - strtotime($last_time));
-
-                if ($diff <= $MS_IN_S * $MERGE_THRESHOLD) {
-                    $temp[] = $array;
-                } else {
-                    $result[$time] = $temp;
-                    $temp = [$array];
-                }
-            }
-
-            $last_time = $time;
+        foreach($input as $time => $data){
+             if ($last_time === null){
+                 $last_time = $time;
+                 $temp[] = $data;
+                 continue;
+             }
+             if (abs(strtotime($time) - strtotime($last_time)) > $MERGE_THRESHOLD) {
+                 $result_array[$last_time] = $temp;
+                 $temp = array();
+                 $last_time = $time;
+             }
+            $temp[] = $data;
         }
-
-        if (!empty($temp)) {
-            $result[$time] = $temp;
+        if (count($temp) > 0) {
+            $result_array[$last_time] = $temp;
         }
-
-        return $result;
-}
-//    function combine_arrays($input) {
-//        $result = [];
-//        $temp = [];
-//
-//        foreach ($input as $time => $array) {
-//            if (empty($temp)) {
-//                $temp[$time] = $array;
-//            } else {
-//                $last_time = key(array_slice($temp, -1, 1, true));
-//                $diff = abs(strtotime($time) - strtotime($last_time));
-//
-//                if ($diff <= 5) {
-//                    $temp[$time] = $array;
-//                } else {
-//                    $result[] = $temp;
-//                    $temp = [$time => $array];
-//                }
-//            }
-//        }
-//
-//        if (!empty($temp)) {
-//            $result[] = $temp;
-//        }
-//
-//        return $result;
-//    }
-
+        return $result_array;
+    }
 
 }
