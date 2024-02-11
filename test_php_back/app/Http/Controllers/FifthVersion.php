@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\HistoryConfigs\DistributorHistoryConfig;
 use App\HistoryConfigs\DistrictHistoryConfig;
 use App\HistoryConfigs\EventHistoryConfig;
 use App\HistoryConfigs\TheaterHistoryConfig;
@@ -25,6 +26,7 @@ class FifthVersion extends Controller
         'events' => EventHistoryConfig::class,
         'theaters' => TheaterHistoryConfig::class,
         'districts' => DistrictHistoryConfig::class,
+        'distributors' => DistributorHistoryConfig::class
     ]);
 
     private static function getCurrentObject($table, $original_id){
@@ -50,7 +52,6 @@ class FifthVersion extends Controller
         $history = HistorySaving::
         where('table_name', $tableName)
             ->where('original_id', $original_id)
-//            ->where('first_created', $is_first_created)
             ->orderBy('created_at', 'ASC');
         if ($start_date && $end_date) {
             $history = $history->whereBetween('created_at', [$start_date, $end_date]);
@@ -92,6 +93,13 @@ class FifthVersion extends Controller
             $level = $value;
     }
 
+    private static function get_many_to_many_realtions_history($many_relation, $original_id){
+        $table = $many_relation['through_model'];
+        dd($table::find($original_id));
+        $t = HistorySaving::where('table_name', $many_relation['through_table'])->get();
+        dd($t);
+    }
+
     private static function objectAndInnerRelationsHistory($table, $original_id, $start_date, $end_date, &$nested, $current_scope, &$already_added_history)
     {
         $this_cfg = self::$tableName_historyConfigs[$table]::get_cfg();
@@ -129,6 +137,9 @@ class FifthVersion extends Controller
                     $already_added_history[$history_object->id] = true;
                 }
             }
+        }
+        foreach($this_cfg['many_to_many_relations'] as $many_relation){
+            self::get_many_to_many_realtions_history($many_relation, $original_id);
         }
         return $resulting_data;
     }
