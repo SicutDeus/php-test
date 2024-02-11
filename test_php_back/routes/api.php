@@ -57,6 +57,7 @@ Route::get('/history/classes/{table}/{original_id}/test5/', [\App\Http\Controlle
 
 
 Route::get('/test', [FirstWorkingVersion::class, 'testFunc']);
+Route::get('/test-time', [FirstWorkingVersion::class, 'testTime']);
 Route::get('/testtest', [FirstWorkingVersion::class, 'saveOne']);
 Route::get('/seed-changes', [FirstWorkingVersion::class, 'seedChangeFunc']);
 Route::get('/history/{table}/{original_id}/', [FirstWorkingVersion::class, 'testFunc2']);

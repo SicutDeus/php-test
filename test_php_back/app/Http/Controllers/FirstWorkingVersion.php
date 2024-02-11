@@ -9,6 +9,7 @@ use App\Models\Image;
 use App\Models\Theater;
 use App\Models\Ticket;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Client\HttpClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -100,6 +101,14 @@ class FirstWorkingVersion extends Controller
         return response()->json('success');
     }
 
+    public function testTime(){
+        $date = Carbon::now();
+        $ticket = Ticket::find(1);
+        $ticket->jopa = now();
+        $ticket->created_at = now();
+        $ticket->save();
+        dd($ticket->created_at->format('Y-m-d H:i:s.u'));
+    }
     public function seedChangeFunc()
     {
         for($i = 0; $i < 1; $i++){

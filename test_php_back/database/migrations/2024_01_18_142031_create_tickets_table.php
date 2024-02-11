@@ -21,8 +21,9 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
 
-            $table->timestamp('created_at', 4)->nullable();
-            $table->timestamp('updated_at', 4)->nullable();
+            $table->timestamp('created_at', 6)->nullable();
+            $table->timestamp('jopa', 6)->nullable();
+            $table->timestamp('updated_at', 6)->nullable();
         });
     }
 
