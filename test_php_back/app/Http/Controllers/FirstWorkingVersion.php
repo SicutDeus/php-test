@@ -102,12 +102,19 @@ class FirstWorkingVersion extends Controller
     }
 
     public function testTime(){
-        $date = Carbon::now();
-        $ticket = Ticket::find(1);
-        $ticket->jopa = now();
-        $ticket->created_at = now();
-        $ticket->save();
-        dd($ticket->created_at->format('Y-m-d H:i:s.u'));
+        $ticket = Ticket::create([
+            'name' => fake()->name,
+            'user_id' => User::inRandomOrder()->first()->id,
+            'event_id' => Event::inRandomOrder()->first()->id,
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s.u'),
+//            'updated_at' => Carbon::now()->format('Y-m-d H:i:s.u'),
+        ]);
+//        $date = Carbon::now();
+//        $ticket = Ticket::find(1);
+//        $ticket->jopa = now();
+//        $ticket->created_at = now();
+//        $ticket->save();
+        dd($ticket->created_at);
     }
     public function seedChangeFunc()
     {

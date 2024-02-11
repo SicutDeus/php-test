@@ -17,6 +17,8 @@ class Ticket extends Model
         'created' => CreateObjectEvent::class,
     ];
 
+    public $timestamps = false;
+
     public function event()
     {
         return $this->hasOne(Event::class, 'id', 'event_id');
