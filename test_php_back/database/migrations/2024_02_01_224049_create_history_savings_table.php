@@ -17,11 +17,14 @@ return new class extends Migration
             $table->string('change_author')->nullable();
             $table->string('table_name')->index();
             $table->json('changes')->nullable();
-            $table->boolean('has_foreign_chagned')->default(false);
             $table->boolean('first_created')->default(false);
             $table->unsignedBigInteger('original_id')->nullable()->index();
 
-            $table->timestamps();
+            $table->timestamp('change_made_at', 6)->nullable();
+
+            $table->index(['table_name', 'original_id']);
+
+//            $table->timestamps();
         });
     }
 

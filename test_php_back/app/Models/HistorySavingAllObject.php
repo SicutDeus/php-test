@@ -12,5 +12,7 @@ class HistorySavingAllObject extends Model
         'old_object_data' => 'array',
         'new_object_data' => 'array',
     ];
+    public $timestamps = false;
+
     protected $guarded = false;
 }

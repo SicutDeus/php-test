@@ -11,5 +11,7 @@ class HistorySaving extends Model
     protected $casts = [
         'changes' => 'array',
     ];
+    public $timestamps = false;
+
     protected $guarded = false;
 }

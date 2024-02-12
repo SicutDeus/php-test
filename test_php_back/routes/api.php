@@ -50,13 +50,15 @@ Route::group(['namespace' => 'telegram-bot'], function () {
 });
 
 
-Route::get('/history/classes/{table}/{original_id}/test2/', [\App\Http\Controllers\SecondVersionClasses::class, 'testWithClasses']);
-Route::get('/history/classes/{table}/{original_id}/test3/', [\App\Http\Controllers\ThirdVersionAllHistory::class, 'testWithClasses']);
-Route::get('/history/classes/{table}/{original_id}/test4/', [\App\Http\Controllers\FourthVersion::class, 'jopaTest']);
-Route::get('/history/classes/{table}/{original_id}/test5/', [\App\Http\Controllers\FifthVersion::class, 'test5']);
+//Route::get('/history/classes/{table}/{original_id}/test2/', [\App\Http\Controllers\SecondVersionClasses::class, 'testWithClasses']);
+//Route::get('/history/classes/{table}/{original_id}/test3/', [\App\Http\Controllers\ThirdVersionAllHistory::class, 'testWithClasses']);
+//Route::get('/history/classes/{table}/{original_id}/test4/', [\App\Http\Controllers\FourthVersion::class, 'jopaTest']);
+//Route::get('/history/classes/{table}/{original_id}/test5/', [\App\Http\Controllers\FifthVersion::class, 'test5']);
+Route::get('/history/classes/{table}/{original_id}/test5/', [\App\Http\Controllers\History\HistoryController::class, 'getObjectHistory']);
 
 
 Route::get('/test', [FirstWorkingVersion::class, 'testFunc']);
+Route::get('/test', [\App\Http\Controllers\History\HistoryController::class, 'getObjectHistory']);
 Route::get('/test-time', [FirstWorkingVersion::class, 'testTime']);
 Route::get('/testtest', [FirstWorkingVersion::class, 'saveOne']);
 Route::get('/seed-changes', [FirstWorkingVersion::class, 'seedChangeFunc']);
