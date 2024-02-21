@@ -13,7 +13,8 @@ class HistoryAll extends HistoryBase
         $end_date,
         &$nested,
         $current_scope,
-        &$already_added_history
+        &$already_added_history,
+        $should_not_check = [],
     ) {
         $this_cfg = self::$tableNamesHistoryConfigs[$table]::get_cfg();
         $main_object_history = self::getHistoryOrFirstCreatedObject(
@@ -25,9 +26,13 @@ class HistoryAll extends HistoryBase
         );
         $resulting_data = array();
         foreach ($main_object_history as $history_object) {
+            HistoryManyToMany::getManyToManyHistory($history_object, $nested, $current_scope, $already_added_history);
             if (!array_key_exists($history_object->id, $already_added_history)) {
                 $inner_data = ([]);
                 foreach ($this_cfg['foreign_tables'] as $field => $foreign_table) {
+                    if (array_key_exists($field, $should_not_check)){
+                        continue;
+                    }
                     $scope = $current_scope;
                     if (array_key_exists($field, $history_object->changes)) {
                         $foreign_object = self::getHistoryOrFirstCreatedObject(
@@ -54,9 +59,11 @@ class HistoryAll extends HistoryBase
                     }
                 }
                 if (!$history_object->first_created) {
+                    $dataToAdd = $history_object->changes;
+                    $dataToAdd['id'] = $history_object->original_id;
                     $res = array_merge(
                         $inner_data,
-                        $history_object->changes,
+                        $dataToAdd,
                         ['change_made_at' => $history_object->change_made_at]
                     );
                     $resulting_data = $res;

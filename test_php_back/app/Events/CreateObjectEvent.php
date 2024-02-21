@@ -2,8 +2,11 @@
 
 namespace App\Events;
 
+use App\HistoryConfigs\HistoryBaseConfig;
+use App\Http\Controllers\History\HistoryBase;
 use App\Models\HistorySaving;
 use App\Models\HistorySavingAllObject;
+use App\Models\HistorySavingManyToMany;
 use Carbon\Carbon;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -18,7 +21,7 @@ use function Symfony\Component\Translation\t;
 
 class CreateObjectEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels, SaveCreateObjectTrait;
 
     /**
      * Create a new event instance.
@@ -26,16 +29,36 @@ class CreateObjectEvent
 
     public function __construct($object)
     {
-        HistorySaving::create([
-            'table_name' => $object->getTable(),
-            'changes' => array_diff_key(
-                $object->getAttributes(),
-                array_flip(['password', 'remember_token', 'created_at', 'updated_at'])
-            ),
-            'original_id' => $object->getKey(),
-            'first_created' => true,
-            'change_made_at' => Carbon::now()->format('Y-m-d H:i:s.u'),
-        ]);
+        if (array_key_exists($object->getTable(), HistoryBaseConfig::$all_many_to_many_rels)){
+            $relation = HistoryBaseConfig::$all_many_to_many_rels[$object->getTable()];
+            $related_objs = [];
+            foreach ($relation as $field => $table){
+                $related_objs[] = HistoryBase::$tableNamesHistoryConfigs[$table]::get_cfg()['model']::find($object->getAttribute($field));
+            }
+            self::createManyToManyHistory($related_objs[0],  $related_objs[1], 'added');
+        }
+        else{
+            $this_cfg = HistoryBase::$tableNamesHistoryConfigs[$object->getTable()]::get_cfg();
+            foreach ($this_cfg['oneToMany'] as $field => $table){
+                HistorySavingManyToMany::create([
+                   'first_table' => $object->getTable(),
+                    'first_id' => $object->id,
+                    'second_table' => $table,
+                    'second_id' => $object->getAttribute($field),
+                    'status' => 'added',
+                    'change_made_at' => Carbon::now()->format('Y-m-d H:i:s.u'),
+                ]);
+            }
+
+            self::createOneObjectHistory(
+                $object,
+                array_diff_key(
+                    $object->getAttributes(),
+                    array_flip(['password', 'remember_token', 'created_at', 'updated_at'])
+                ),
+                true
+            );
+        }
     }
 
 }

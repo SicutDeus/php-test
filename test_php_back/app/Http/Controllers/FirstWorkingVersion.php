@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appeal;
 use App\Models\District;
 use App\Models\Event;
 use App\Models\HistorySaving;
 use App\Models\Image;
+use App\Models\Product;
+use App\Models\Seller;
+use App\Models\SellerAppeal;
 use App\Models\Theater;
 use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
+use Database\Seeders\AppealsSeeder;
 use Illuminate\Http\Client\HttpClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +26,30 @@ class FirstWorkingVersion extends Controller
 {
     public function testFunc()
     {
+//          $p = Product::find(5);
+////          $p->appeal_id = 7;
+//          $p->product = "MOCHAPIZDA" . fake()->name;
+//          $p->save();
+
+//        $s = Seller::factory()->count(1)->create();
+
+        $s = Seller::find(3);
+        $s->name = fake()->name;
+        $s->save();
+
+//        $t = SellerAppeal::find(5);
+//        $t->seller_id = Seller::inRandomOrder()->first()->id;
+//        $t->save();
+
+//        $t = SellerAppeal::create([
+//           'appeal_id' => Appeal::find(2)->id,
+//           'seller_id' => Seller::inRandomOrder()->first()->id,
+//        ]);
+
+//        $a = Appeal::find(1);
+//        $a->name = fake()->name;
+//        $a->save();
+        return response()->json('xui');
 
         for ($i = 0; $i < 100000; $i++){
             $ticket = Ticket::inRandomOrder()->first();
@@ -101,11 +130,7 @@ class FirstWorkingVersion extends Controller
             'created_at' => Carbon::now()->format('Y-m-d H:i:s.u'),
 //            'updated_at' => Carbon::now()->format('Y-m-d H:i:s.u'),
         ]);
-//        $date = Carbon::now();
-//        $ticket = Ticket::find(1);
-//        $ticket->jopa = now();
-//        $ticket->created_at = now();
-//        $ticket->save();
+
         dd($ticket->created_at);
     }
     public function seedChangeFunc()

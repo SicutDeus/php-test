@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\History;
 
+use App\HistoryConfigs\AppealsHistoryConfig;
 use App\HistoryConfigs\DistributorHistoryConfig;
 use App\HistoryConfigs\DistrictHistoryConfig;
 use App\HistoryConfigs\EventHistoryConfig;
+use App\HistoryConfigs\ProductHistoryConfig;
+use App\HistoryConfigs\SellersHistoryConfig;
 use App\HistoryConfigs\TheaterHistoryConfig;
 use App\HistoryConfigs\TicketHistoryConfig;
 use App\HistoryConfigs\UserHistoryConfig;
 use App\Models\HistorySaving;
+use Carbon\Carbon;
 
 class HistoryBase
 {
@@ -19,7 +23,10 @@ class HistoryBase
         'events' => EventHistoryConfig::class,
         'theaters' => TheaterHistoryConfig::class,
         'districts' => DistrictHistoryConfig::class,
-        'distributors' => DistributorHistoryConfig::class
+        'distributors' => DistributorHistoryConfig::class,
+        'sellers' => SellersHistoryConfig::class,
+        'appeals' => AppealsHistoryConfig::class,
+        'products' => ProductHistoryConfig::class,
     ]);
 
     protected static function getHistoryOrFirstCreatedObject(
@@ -36,6 +43,9 @@ class HistoryBase
         if ($start_date && $end_date) {
             $history = $history->whereBetween('change_made_at', [$start_date, $end_date]);
         }
+        else if ($start_date){
+            $history = $history->where('change_made_at', '>', $start_date);
+        }
         return $is_first_created ? $history->where('first_created', $is_first_created)->first() : $history->get();
     }
 
@@ -46,7 +56,7 @@ class HistoryBase
         for ($i=0; $i<$len; $i++) {
             $level = &$level[$scope[$i]];
         }
-        $level = $value;
+        $level = array_diff_key($value, array_flip(['change_made_at']));
     }
     public static function combineArrayByTime($input)
     {
@@ -71,5 +81,14 @@ class HistoryBase
             $result_array[$last_time] = $temp;
         }
         return $result_array;
+    }
+
+    public static function getEndTime($date){
+        if (is_string($date)){
+            $date = Carbon::createFromFormat(self::$date_format, $date);
+        }
+        $daysToAdd = 360;
+        $date = $date->addDays($daysToAdd);
+        return $date;
     }
 }

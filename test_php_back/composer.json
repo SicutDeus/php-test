@@ -7,7 +7,7 @@
     "require": {
         "php": "^8.2",
         "ext-zip": "*",
-        "doctrine/dbal": "^3.8",
+        "doctrine/dbal": "3.8",
         "grohiro/laravel-camelcase-json": "~2.0",
         "guzzlehttp/guzzle": "^7.2",
         "irazasyed/telegram-bot-sdk": "^3.13",
@@ -22,7 +22,6 @@
         "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.13",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.18",

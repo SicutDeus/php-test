@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\DistributorTicket;
+use App\Models\Product;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,6 +22,11 @@ class DatabaseSeeder extends Seeder
             DistributorSeeder::class,
             TicketTableSeeder::class,
             DistributorTicketSeeder::class,
+            SellerSeeder::class,
+            AppealsSeeder::class,
+            ApplicantSeeder::class,
+            ProductSeeder::class,
+            SellerAppealSeeder::class,
         ]);
         // \App\Models\User::factory(10)->create();
 

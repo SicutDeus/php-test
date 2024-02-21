@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Ticket;
+use App\Models\SellerAppeal;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class TicketTableSeeder extends Seeder
+class SellerAppealSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Ticket::factory()->count(10)->create();
+        SellerAppeal::factory()->count(3)->create();
     }
 }

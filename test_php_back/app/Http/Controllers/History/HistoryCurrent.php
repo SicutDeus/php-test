@@ -17,6 +17,16 @@ class HistoryCurrent extends HistoryBase
         $this_cfg = self::$tableNamesHistoryConfigs[$table]::get_cfg();
         $main_object = self::getCurrentObject($this_cfg['table_name'], $original_id);
         $main_object_data = $main_object->toArray();
+        foreach ($this_cfg['manyToMany'] as $many_foreign_table => $many_foreign_method) {
+            $foreign_objs = $main_object->$many_foreign_method;
+            foreach ($foreign_objs as $foreign){
+                $inner_for_foreign_object = self::objectAndInnerRelationsCurrentObject(
+                    $many_foreign_table,
+                    $foreign->id
+                );
+                $main_object_data[$many_foreign_table][] = $inner_for_foreign_object;
+            }
+        }
         foreach ($this_cfg['foreign_tables'] as $field => $foreign_table) {
             $foreign_object = self::getCurrentObject($foreign_table['table'], $main_object->$field);
             $inner_for_foreign_object = self::objectAndInnerRelationsCurrentObject(

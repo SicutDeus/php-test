@@ -17,8 +17,8 @@ class HistoryController extends Controller
         HistoryAll::objectAndInnerRelationsHistory(
             $table,
             $original_id,
-            '2020-02-01 16:43:25',
-            '2030-02-01 16:43:25',
+            $created['created_at'],
+            HistoryBase::getEndTime($created['created_at'])->format(HistoryBase::$date_format),
             $nested,
             [$this_cfg['front_one_name']],
             $already_added_objs,

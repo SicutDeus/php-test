@@ -12,7 +12,12 @@ class HistoryBaseConfig{
     protected static $exclude_fields = ([]); // if some fields can be excluded
     protected static $extra_filter_fields = ([]); // ['field_name' => 'field_value']
     protected static $timestamp_to_filter = ([]); // ['field_name' => 'timestamp']
-    protected static $many_to_many_relations = ([]);
+
+    protected static $manyToMany = [];
+
+    protected static $oneToMany = ([]);
+    protected static $fromOtherTables = ([]);
+
 
 
     public static function get_cfg(){
@@ -26,7 +31,16 @@ class HistoryBaseConfig{
             'extra_filter_fields' => static::$extra_filter_fields,
             'timestamps_to_filter' => static::$timestamp_to_filter,
             'foreign_tables' => static::$foreign_tables,
-            'many_to_many_relations' => static::$many_to_many_relations,
+            'manyToMany' => static::$manyToMany,
+            'oneToMany' => static::$oneToMany,
+            'fromOtherTables' => static::$fromOtherTables,
         ];
     }
+
+    public static $all_many_to_many_rels = ([
+        'seller_appeals' => ([
+            'seller_id' => 'sellers',
+            'appeal_id' => 'appeals',
+        ])
+    ]);
 }
