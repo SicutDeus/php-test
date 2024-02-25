@@ -10,4 +10,8 @@ class HistorySavingManyToMany extends Model
     use HasFactory;
     public $timestamps = false;
     protected $guarded = false;
+    protected $casts = [
+        'first_data' => 'array',
+        'second_data' => 'array',
+    ];
 }

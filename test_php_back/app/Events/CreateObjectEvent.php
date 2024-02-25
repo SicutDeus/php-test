@@ -41,11 +41,12 @@ class CreateObjectEvent
             $this_cfg = HistoryBase::$tableNamesHistoryConfigs[$object->getTable()]::get_cfg();
             foreach ($this_cfg['oneToMany'] as $field => $table){
                 HistorySavingManyToMany::create([
-                   'first_table' => $object->getTable(),
+                    'first_table' => $object->getTable(),
                     'first_id' => $object->id,
                     'second_table' => $table,
                     'second_id' => $object->getAttribute($field),
-                    'status' => 'added',
+                    'first_data' => self::createCurrentAllObject($object->getTable(), $object->id),
+                    'second_data' => self::createCurrentAllObject($table, $object->getAttribute($field)),
                     'change_made_at' => Carbon::now()->format('Y-m-d H:i:s.u'),
                 ]);
             }

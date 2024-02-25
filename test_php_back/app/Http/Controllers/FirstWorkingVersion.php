@@ -26,16 +26,16 @@ class FirstWorkingVersion extends Controller
 {
     public function testFunc()
     {
-//          $p = Product::find(5);
-////          $p->appeal_id = 7;
-//          $p->product = "MOCHAPIZDA" . fake()->name;
-//          $p->save();
+          $p = Product::find(5);
+          $p->appeal_id = 1;
+          $p->product = "MOCHAPIZDA" . fake()->name;
+          $p->save();
 
 //        $s = Seller::factory()->count(1)->create();
 
-        $s = Seller::find(3);
-        $s->name = fake()->name;
-        $s->save();
+//        $s = Seller::find(3);
+//        $s->name = fake()->name;
+//        $s->save();
 
 //        $t = SellerAppeal::find(5);
 //        $t->seller_id = Seller::inRandomOrder()->first()->id;

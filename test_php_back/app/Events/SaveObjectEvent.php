@@ -41,6 +41,7 @@ class SaveObjectEvent
                 }
                 $related_objs[$associated_name] = HistoryBase::$tableNamesHistoryConfigs[$table]::get_cfg()['model']::find($object->getAttribute($field));
             }
+
             self::createManyToManyHistory($removed_relation,  $related_objs['saved'], 'removed');
             self::createManyToManyHistory($related_objs['changed'],  $related_objs['saved'], 'added');
         }
@@ -69,10 +70,7 @@ class SaveObjectEvent
                         ->toArray(),
                     array_flip(['created_at', 'updated_at'])
                 );
-                $new_object = array_diff_key(
-                    HistoryCurrent::objectAndInnerRelationsCurrentObject($fk_table, $changes[$field]),
-                    array_flip(['created_at', 'updated_at'])
-                );
+                $new_object = self::createCurrentAllObject($fk_table, $changes[$field]);
                 HistorySavingAllObject::create([
                     'table_name' => $fk_table,
                     'old_object_data' => $original_object,

@@ -22,17 +22,36 @@ class HistoryManyToMany extends HistoryBase
         return $history;
     }
     private static function makeReadableContentManyToMany($oneRelation, $self_table_name){
-        $data = ([
+        $data = ([]);
+        $data['added'] = ([
             'change_made_at' => $oneRelation['change_made_at'],
-            'status' => $oneRelation['status'],
+            'status' => 'added'
         ]);
         if ($oneRelation['first_table'] === $self_table_name){
-            $data['table'] = $oneRelation['second_table'];
-            $data['id'] = $oneRelation['second_id'];
+            $data['added']['table'] = $oneRelation['second_table'];
+            $data['added']['id'] = $oneRelation['second_id'];
+            $data['added'][HistoryBase::$tableNamesHistoryConfigs[$data['added']['table']]::get_cfg()['front_one_name']] = $oneRelation['second_data'];
+            if ($oneRelation['expired_at']){
+                $data['removed'] = ([
+                    'table' => $oneRelation['second_table'],
+                    'id' => $oneRelation['second_id'],
+                    'status' => 'removed',
+                    'change_made_at' => $oneRelation['change_made_at'],
+                ]);
+            }
         }
         else{
-            $data['table'] = $oneRelation['first_table'];
-            $data['id'] = $oneRelation['first_id'];
+            $data['added']['table'] = $oneRelation['first_table'];
+            $data['added']['id'] = $oneRelation['first_id'];
+            $data['added'][HistoryBase::$tableNamesHistoryConfigs[$data['added']['table']]::get_cfg()['front_one_name']] = $oneRelation['first_data'];
+            if ($oneRelation['expired_at']){
+                $data['removed'] = ([
+                    'table' => $oneRelation['first_table'],
+                    'id' => $oneRelation['first_id'],
+                    'status' => 'removed',
+                    'change_made_at' => $oneRelation['expired_at'],
+                ]);
+            }
         }
         return $data;
     }
@@ -49,26 +68,30 @@ class HistoryManyToMany extends HistoryBase
         $inner_scope[] = $foreign_table_name;
         $oneRelationHistory = self::getOneManyToManyRelated($history_obj, $foreign_table_name);
         foreach ($oneRelationHistory as $oneRelation){
-            $readable = $isManyToMany ? self::makeReadableContentManyToMany($oneRelation->toArray(), $history_obj->table_name)
-             : self::makeReadableContentManyToMany($oneRelation->toArray(), $history_obj->table_name);
+            $readable = self::makeReadableContentManyToMany($oneRelation->toArray(), $history_obj->table_name);
             $shouldNotCheck = $isManyToMany ? [] : self::getRecursionForeignField($oneRelation->toArray(), $history_obj->table_name);
             HistoryBase::setVal(
                 $nested,
                 $inner_scope,
-                $readable
+                $readable['added']
             );
-            if ($readable['status'] === 'added'){
-                HistoryAll::objectAndInnerRelationsHistory(
-                    $readable['table'],
-                    $readable['id'],
-                    $oneRelation->change_made_at,
-                    $oneRelation->expired_at,
+            if (array_key_exists('removed', $readable)){
+                HistoryBase::setVal(
                     $nested,
                     $inner_scope,
-                    $already_added_history,
-                    $shouldNotCheck
+                    $readable['removed']
                 );
-                }
+            }
+            HistoryAll::objectAndInnerRelationsHistory(
+                $readable['added']['table'],
+                $readable['added']['id'],
+                $oneRelation->change_made_at,
+                $oneRelation->expired_at,
+                $nested,
+                $inner_scope,
+                $already_added_history,
+                $shouldNotCheck
+            );
         }
     }
 

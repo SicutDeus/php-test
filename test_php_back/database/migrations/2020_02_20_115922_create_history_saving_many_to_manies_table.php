@@ -16,13 +16,15 @@ return new class extends Migration
 
             $table->string('first_table');
             $table->string('second_table');
+
             $table->unsignedBigInteger('first_id');
             $table->unsignedBigInteger('second_id');
 
             $table->index(['first_table', 'first_id']);
             $table->index(['second_table', 'second_id']);
 
-            $table->string('status');
+            $table->json('first_data')->nullable();
+            $table->json('second_data')->nullable();
 
             $table->timestamp('change_made_at', 6)->nullable();
             $table->timestamp('expired_at', 6)->nullable();
