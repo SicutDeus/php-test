@@ -6,6 +6,7 @@ use App\Models\Appeal;
 use App\Models\District;
 use App\Models\Event;
 use App\Models\HistorySaving;
+use App\Models\House;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\Seller;
@@ -26,10 +27,14 @@ class FirstWorkingVersion extends Controller
 {
     public function testFunc()
     {
-          $p = Product::find(5);
-          $p->appeal_id = 1;
-          $p->product = "MOCHAPIZDA" . fake()->name;
-          $p->save();
+        $h = House::find(1);
+        $h->name = 'Houis - - -' . fake()->name;
+        $h->save();
+
+//          $p = Product::find(5);
+//          $p->appeal_id = 1;
+//          $p->product = "MOCHAPIZDA" . fake()->name;
+//          $p->save();
 
 //        $s = Seller::factory()->count(1)->create();
 

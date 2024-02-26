@@ -18,5 +18,12 @@ class ProductHistoryConfig extends HistoryBaseConfig{
 
     protected static $oneToMany = ['appeal_id' => 'appeals'];//table_name
 
+    public static  $foreign_tables = ([
+        'house_id' => ([
+            'table' => 'houses',
+            'name' => 'house',
+        ]),
+    ]);
+
 
 }

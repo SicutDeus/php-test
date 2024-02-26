@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\History;
 
 use App\Models\HistorySavingAllObject;
+use Exception;
 
 class HistoryAll extends HistoryBase
 {

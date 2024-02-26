@@ -17,7 +17,7 @@ class AppealsHistoryConfig extends HistoryBaseConfig{
 
     protected static $manyToMany = ['sellers' => 'sellers'];//table_name
 
-    protected static  $fromOtherTables = ['products'];
+    protected static  $fromOtherTables = ['products' => 'products']; //table_name => method
     public static  $foreign_tables = ([
         'district_id' => ([
             'table' => 'districts',

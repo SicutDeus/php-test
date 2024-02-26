@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Appeal;
+use App\Models\House;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,7 @@ class ProductFactory extends Factory
         return [
             'product' => 'Название продукта' . fake()->name,
             'appeal_id' => Appeal::inRandomOrder()->first()->id,
+            'house_id' => House::inRandomOrder()->first()->id,
         ];
     }
 }

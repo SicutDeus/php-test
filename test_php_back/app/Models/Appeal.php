@@ -16,6 +16,11 @@ class Appeal extends Model
         'created' => CreateObjectEvent::class,
     ];
 
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
     public function sellers(){
         return $this->hasManyThrough(
             Seller::class,

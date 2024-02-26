@@ -69,7 +69,7 @@ class HistoryManyToMany extends HistoryBase
         $oneRelationHistory = self::getOneManyToManyRelated($history_obj, $foreign_table_name);
         foreach ($oneRelationHistory as $oneRelation){
             $readable = self::makeReadableContentManyToMany($oneRelation->toArray(), $history_obj->table_name);
-            $shouldNotCheck = $isManyToMany ? [] : self::getRecursionForeignField($oneRelation->toArray(), $history_obj->table_name);
+            $shouldNotCheck = $isManyToMany ? [] : [self::getRecursionForeignField($oneRelation->toArray(), $history_obj->table_name)];
             HistoryBase::setVal(
                 $nested,
                 $inner_scope,
@@ -101,7 +101,7 @@ class HistoryManyToMany extends HistoryBase
         foreach ($cfg['manyToMany'] as $foreign_table_name => $foreign_table_method) {
             self::everyRelation($history_obj, $foreign_table_name, $nested, $inner_scope, $already_added_history , 1);
         }
-        foreach ($cfg['fromOtherTables'] as $oneRelTableName){
+        foreach ($cfg['fromOtherTables'] as $oneRelTableName => $method){
             self::everyRelation($history_obj, $oneRelTableName, $nested, $inner_scope, $already_added_history, 0);
         }
 

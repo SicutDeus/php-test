@@ -11,6 +11,7 @@ use App\HistoryConfigs\SellersHistoryConfig;
 use App\HistoryConfigs\TheaterHistoryConfig;
 use App\HistoryConfigs\TicketHistoryConfig;
 use App\HistoryConfigs\UserHistoryConfig;
+use App\HistoryConfigs\HousesHistoryConfig;
 use App\Models\HistorySaving;
 use Carbon\Carbon;
 
@@ -27,6 +28,7 @@ class HistoryBase
         'sellers' => SellersHistoryConfig::class,
         'appeals' => AppealsHistoryConfig::class,
         'products' => ProductHistoryConfig::class,
+        'houses' => HousesHistoryConfig::class,
     ]);
 
     protected static function getHistoryOrFirstCreatedObject(

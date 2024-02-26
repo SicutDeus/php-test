@@ -19,6 +19,10 @@ return new class extends Migration
             $table->unsignedBigInteger('appeal_id')->nullable();
             $table->foreign('appeal_id')->references('id')->on('appeals')->onDelete('set null');
 
+            $table->unsignedBigInteger('house_id')->nullable();
+            $table->foreign('house_id')->references('id')->on('houses')->onDelete('set null');
+
+
             $table->timestamps();
         });
     }
